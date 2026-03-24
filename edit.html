@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Student</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+
+      background: url('/bg.jpg');
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Card Box */
+    .box {
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      width: 380px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(19, 237, 230, 0.929);
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    /* Input fields */
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52,152,219,0.5);
+    }
+
+    /* Button */
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: linear-gradient(45deg, #3498db, #6dd5fa);
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, #2980b9, #4facfe);
+      transform: scale(1.05);
+    }
+
+    /* Back button */
+    .back {
+      margin-top: 10px;
+      background: #e74c3c;
+    }
+
+    .back:hover {
+      background: #c0392b;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Edit Student</h2>
+
+  <form action="/update" method="post">
+
+    <input type="hidden" name="id" th:value="${student.id}">
+
+    <input type="text" name="name" th:value="${student.name}" required>
+    <input type="email" name="email" th:value="${student.email}" required>
+    <input type="text" name="course" th:value="${student.course}" required>
+
+    <select name="gender">
+      <option th:selected="${student.gender=='Male'}">Male</option>
+      <option th:selected="${student.gender=='Female'}">Female</option>
+    </select>
+
+    <input type="date" name="dob" th:value="${student.dob}">
+
+    <button type="submit">Update</button>
+  </form>
+</div>
+
+</body>
+</html>

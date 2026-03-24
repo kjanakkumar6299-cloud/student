@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI';
+      background: #f4f6f9;
+    }
+
+    .container { display: flex; }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #1e3c72;
+      color: white;
+      padding-top: 20px;
+    }
+
+    .sidebar h2 { text-align: center; }
+
+    .sidebar a {
+      display: block;
+      padding: 12px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover { background: #2a5298; }
+
+    .main { flex: 1; }
+
+    .topbar {
+      background: #3498db;
+      padding: 15px;
+      color: white;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      flex: 1;
+      padding: 20px;
+      color: white;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .blue { background: #3498db; }
+    .green { background: #27ae60; }
+    .purple { background: #8e44ad; }
+
+    .table-box {
+      margin: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete { background: red; }
+    .edit { background: orange; }
+
+    .form-box {
+      margin: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      display: none;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .save {
+      background: #3498db;
+      color: white;
+      width: 100%;
+    }
+
+    .cancel {
+      background: #e74c3c;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+
+    .gender-box {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .gender-option {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .gender-option input {
+      display: none;
+    }
+
+    .gender-option span {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .gender-option input:checked + span {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>SMS</h2>
+    <a href="#">Dashboard</a>
+    <a href="#" onclick="showForm()">Add Student</a>
+    <a href="/">Logout</a>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <h2>Student Management System</h2>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards">
+      <div class="card blue">
+        Total Students<br>
+        <span th:text="${total}"></span>
+      </div>
+
+      <div class="card green">
+        Male Students<br>
+        <span th:text="${male}"></span>
+      </div>
+
+      <div class="card purple">
+        Female Students<br>
+        <span th:text="${female}"></span>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-box" id="studentForm">
+      <h3>Add Student</h3>
+
+      <form action="/add" method="post">
+
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+
+        <select name="course">
+          <option>BCA</option>
+          <option>B.Tech(CSE)</option>
+          <option>B.Tech(ME)</option>
+          <option>B.Tech(CIVIL)</option>
+          <option>B.Tech(EL)</option>
+          <option>MCA</option>
+          <option>Diploma(CSE)</option>
+          <option>Diploma(ME)</option>
+          <option>Diploma(CIVIL)</option>
+          <option>Diploma(EL)</option>
+        </select>
+
+        <div class="gender-box">
+          <label class="gender-option">
+            <input type="radio" name="gender" value="Male" required>
+            <span>Male</span>
+          </label>
+
+          <label class="gender-option">
+            <input type="radio" name="gender" value="Female">
+            <span>Female</span>
+          </label>
+        </div>
+        <!-- DOB (DB में save होगा but show नहीं होगा) -->
+        <input type="date" name="dob">
+
+        <button type="submit" class="btn save">Save</button>
+        <button type="button" class="btn cancel" onclick="hideForm()">Cancel</button>
+      </form>
+    </div>
+
+    <form action="/search" method="get" style="margin:20px;">
+      <input type="text" name="keyword" placeholder="Enter Name or ID" required
+             style="padding:10px; width:250px; border-radius:5px; border:1px solid #ccc;">
+
+      <button type="submit" style="padding:10px 15px; background:#3498db; color:white; border:none; border-radius:5px;">
+        Search
+      </button>
+    </form>
+
+    <!-- Table -->
+    <div class="table-box">
+      <h3>Students</h3>
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Course</th>
+          <th>Action</th>
+        </tr>
+
+        <tr th:each="s : ${students}">
+          <td th:text="${s.id}"></td>
+          <td th:text="${s.name}"></td>
+          <td th:text="${s.course}"></td>
+
+          <td>
+            <!-- Edit -->
+            <a th:href="@{'/edit/' + ${s.id}}">
+              <button class="btn edit">Edit</button>
+            </a>
+
+            <!-- Delete -->
+            <a th:href="@{'/delete/' + ${s.id}}">
+              <button class="btn delete">Delete</button>
+            </a>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function showForm() {
+    document.getElementById("studentForm").style.display = "block";
+  }
+
+  function hideForm() {
+    document.getElementById("studentForm").style.display = "none";
+    document.querySelector("form").reset();
+  }
+</script>
+
+</body>
+</html>
